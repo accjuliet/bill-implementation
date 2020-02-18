@@ -4,7 +4,8 @@ public class Error {
     private int code;
     private String message;
 
-    public Error() {
+    public Error(){
+
     }
 
     public Error(int code, String message) {

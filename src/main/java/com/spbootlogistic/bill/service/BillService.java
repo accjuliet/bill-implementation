@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static java.util.Objects.isNull;
 
 @Service
@@ -43,18 +45,19 @@ public class BillService implements IBillService {
     }
 
     public Bill update(long id, Bill source) throws BillNotFoundException {
-        Bill destination = billRepository.findById(id).get();
-        if (isNull(destination)) {
-            LOGGER.error("Bill Not Found");
-            throw new BillNotFoundException("Bill Not Found with Id " + id);
-        }
+        Bill destination = billRepository.findById(id)
+                .orElseThrow(() -> {
+                    LOGGER.error("Bill Not Found with Id " + id);
+                    return new BillNotFoundException("Item Not Found with Id " + id);
+                });
         assignFields(destination, source);
+        source.setId(destination.getId());
         LOGGER.info("Bill with id " + id + " was updated.");
         return billRepository.save(destination);
     }
 
     public void delete(long id) throws BillNotFoundException {
-        if (isNull(billRepository.findById(id))) {
+        if (!billRepository.findById(id).isPresent()) {
             LOGGER.error("Bill Not Found");
             throw new BillNotFoundException("Item Not Found with Id " + id);
         }

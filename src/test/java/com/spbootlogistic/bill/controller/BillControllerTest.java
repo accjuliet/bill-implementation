@@ -136,6 +136,9 @@ class BillControllerTest {
 
     @Test
     public void billControllerDeleteUnsuccessful() throws BillNotFoundException {
-       //
+        doThrow(new BillNotFoundException("Delete")).when(service).delete(anyLong());
+        ResponseEntity responseEntity = controller.delete(anyLong());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertTrue(responseEntity.hasBody());
     }
 }

@@ -113,8 +113,9 @@ public class BillServiceTest {
 
     @Test
     public void billServiceUpdateThrowsBillNotFoundException() {
-        when(repository.findById(2L)).thenReturn(Optional.empty());
-        assertThrows(BillNotFoundException.class,()-> service.findById(2L));
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(BillNotFoundException.class,()-> service.update(1L, bill));
+
 
     }
 
@@ -128,7 +129,7 @@ public class BillServiceTest {
     @Test
     void billServiceDeleteUnsuccessful() {
         when(repository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(BillNotFoundException.class,()-> service.findById(1L));
+        assertThrows(BillNotFoundException.class,()-> service.delete(1L));
         verify(repository, atMost(1)).deleteById(1L);
     }
 }
