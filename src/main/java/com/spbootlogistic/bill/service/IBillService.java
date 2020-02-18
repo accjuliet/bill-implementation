@@ -11,7 +11,7 @@ public interface IBillService {
 
     public Bill save(Bill bill) throws InvalidBillException;
 
-    public Bill update(long id, Bill bill) throws InvalidBillException, BillNotFoundException;
+    public Bill update(long id, Bill bill) throws BillNotFoundException;
 
     public void delete(long id) throws BillNotFoundException;
 }

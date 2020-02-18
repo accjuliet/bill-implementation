@@ -1,11 +1,11 @@
 package com.spbootlogistic.bill.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -15,15 +15,45 @@ public class Bill extends RepresentationModel<Bill> {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
+    @Column
+    @NotNull(message = "folio fiscal cannot be empty")
     private String folioFiscal;
+
+    @Column
+    @NotNull(message = "transmitter RFC cannot be empty")
     private String transmitterRFC;
+
+    @Column
+    @NotNull(message = "transmitter name cannot be empty")
     private String transmitterName;
+
+    @Column
+    @NotNull(message = "receiver RFC cannot be empty")
     private String receiverRFC;
+
+    @Column
+    @NotNull(message = "receiver Name cannot be empty")
     private String receiverName;
+
+    @Column
+    @NotNull(message = "total cannot be empty")
     private double total;
+
+    @Column
+    //@NotNull(message = "date cannot be empty")
+    @CreationTimestamp
     private LocalDate date;
+
+    @Column
+    @NotNull(message = "cfdi cannot be empty")
     private String cfdiUse;
+
+    @Column
+    @NotNull(message = "xmlUrl cannot be empty")
     private String xmlURL;
+
+    @Column
+    @NotNull(message = "pdfUrl cannot be empty")
     private String pdfURL;
 
     public long getId() {

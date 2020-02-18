@@ -54,8 +54,8 @@ public class BillController {
             billService.update(id, bill);
             bill.add(linkTo(methodOn(BillController.class).update(id, bill)).withSelfRel());
             return ResponseEntity.ok(bill);
-        } catch (InvalidBillException | BillNotFoundException e) {
-            return new ResponseEntity(new Error(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (BillNotFoundException e) {
+            return new ResponseEntity(new Error(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
         }
 
     }
@@ -64,7 +64,7 @@ public class BillController {
     public ResponseEntity delete(@PathVariable long id) {
         try {
             billService.delete(id);
-            return ResponseEntity.ok("Deleted Bill with id " + id);
+            return ResponseEntity.accepted().body("Item with Id " + id + " was deleted");
         } catch (BillNotFoundException e) {
             return new ResponseEntity(new Error(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
         }

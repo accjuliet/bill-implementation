@@ -12,29 +12,29 @@ import org.springframework.stereotype.Service;
 import static java.util.Objects.isNull;
 
 @Service
-public class BillService implements IBillService{
+public class BillService implements IBillService {
 
     @Autowired
     BillRepository billRepository;
 
     private static final Logger LOGGER = LogManager.getLogger(BillService.class);
 
-    public Iterable<Bill> findAll(){
+    public Iterable<Bill> findAll() {
         return billRepository.findAll();
     }
 
     public Bill findById(long id) throws BillNotFoundException {
-        Bill bill = billRepository.findById(id).get();
-        if(isNull(bill)){
-            LOGGER.error("Bill Not Found with Id " + id);
-            throw new BillNotFoundException("Item Not Found with Id " + id);
-        }
+        Bill bill = billRepository.findById(id)
+                .orElseThrow(() -> {
+                    LOGGER.error("Bill Not Found with Id " + id);
+                    return new BillNotFoundException("Item Not Found with Id " + id);
+                });
         LOGGER.info("Bill Found with Id " + id);
         return bill;
     }
 
     public Bill save(Bill bill) throws InvalidBillException {
-        if (isNull(bill)){
+        if (isNull(bill)) {
             LOGGER.error("Bill Not Valid");
             throw new InvalidBillException("The Bill send is invalid");
         }
@@ -42,22 +42,19 @@ public class BillService implements IBillService{
         return billRepository.save(bill);
     }
 
-    public Bill update(long id, Bill source) throws InvalidBillException, BillNotFoundException {
-        Bill target = billRepository.findById(id).get();
-        if(isNull(target)){
+    public Bill update(long id, Bill source) throws BillNotFoundException {
+        Bill destination = billRepository.findById(id).get();
+        if (isNull(destination)) {
             LOGGER.error("Bill Not Found");
             throw new BillNotFoundException("Bill Not Found with Id " + id);
-        } else if(isNull(target)) {
-            LOGGER.error("Invalid Item");
-            throw new InvalidBillException("The Bill send is invalid");
         }
-        assignFields(target, source);
-        LOGGER.info("Bill with id " + id + " was saved");
-        return target;
+        assignFields(destination, source);
+        LOGGER.info("Bill with id " + id + " was updated.");
+        return billRepository.save(destination);
     }
 
     public void delete(long id) throws BillNotFoundException {
-        if(isNull(billRepository.findById(id))){
+        if (isNull(billRepository.findById(id))) {
             LOGGER.error("Bill Not Found");
             throw new BillNotFoundException("Item Not Found with Id " + id);
         }
@@ -65,16 +62,16 @@ public class BillService implements IBillService{
         billRepository.deleteById(id);
     }
 
-    private void assignFields(Bill target, Bill source) {
-        target.setCfdiUse(source.getCfdiUse());
-        target.setDate(source.getDate());
-        target.setFolioFiscal(source.getFolioFiscal());
-        target.setPdfURL(source.getPdfURL());
-        target.setReceiverName(source.getReceiverName());
-        target.setReceiverRFC(source.getReceiverRFC());
-        target.setTransmitterName(source.getTransmitterName());
-        target.setTransmitterRFC(source.getTransmitterRFC());
-        target.setTotal(source.getTotal());
-        target.setXmlURL(source.getXmlURL());
+    private void assignFields(Bill destination, Bill source) {
+        destination.setCfdiUse(source.getCfdiUse());
+        destination.setDate(source.getDate());
+        destination.setFolioFiscal(source.getFolioFiscal());
+        destination.setPdfURL(source.getPdfURL());
+        destination.setReceiverName(source.getReceiverName());
+        destination.setReceiverRFC(source.getReceiverRFC());
+        destination.setTransmitterName(source.getTransmitterName());
+        destination.setTransmitterRFC(source.getTransmitterRFC());
+        destination.setTotal(source.getTotal());
+        destination.setXmlURL(source.getXmlURL());
     }
 }
